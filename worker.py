@@ -20,8 +20,8 @@ logger.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S",
 )
 
-prompt_template = """First, check if the following text does not look like song lyrics.
-If it does - write "tldr-abort" and stop responding.
+prompt_template = """First, try to assess if the following text has a very high possibility of being 
+song lyrics (presence of verses / chorus / etc). If it does - write "tldr-abort" and stop responding.
 If it does not - write a concise summary of the text in 3 bullet points (under 300 characters).
 
 
