@@ -54,7 +54,7 @@ def youtube_handler(_, message):
             logger.warning("Detected a song - ignoring")
             mark_as_song(link)
         else:
-            message.reply(answer)
+            message.reply(f"📝 {answer}")
     else:
         logger.warning("Invalid YouTube video URL.")
 
