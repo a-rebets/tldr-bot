@@ -1,5 +1,6 @@
 import os
 import openai
+import logging
 
 from pytube.exceptions import VideoUnavailable
 from urllib.parse import urlparse, parse_qs
@@ -11,6 +12,13 @@ from langchain.text_splitter import CharacterTextSplitter
 from langchain.docstore.document import Document
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts import PromptTemplate
+
+logger = logging
+logger.basicConfig(
+    format="%(asctime)s %(levelname)-8s %(message)s",
+    level=logging.INFO,
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
 
 prompt_template = """First, check if the following text does not look like song lyrics.
 If it does - write "tldr-abort" and stop responding.
@@ -150,6 +158,8 @@ def generate_summary(api_key: str, url: str) -> str:
     # Generating summary of the text file
     with open(transcript_filepath) as f:
         transcript_file = f.read()
+
+    logger.info(transcript_file[0:300])
 
     texts = text_splitter.split_text(transcript_file)
     docs = [Document(page_content=t) for t in texts[:3]]

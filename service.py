@@ -9,20 +9,14 @@ from worker import (
     video_title,
     mark_as_song,
     is_song,
+    logger,
 )
-import logging
 import re
 import os
 
 session_name = f"bot_session_{datetime.today().strftime('%Y-%m-%d')}"
 # Define a filter for YouTube links
 youtube_link_pattern = r"https?://(www\.)?(youtube\.com|youtu\.be)/.+"
-
-logging.basicConfig(
-    format="%(asctime)s %(levelname)-8s %(message)s",
-    level=logging.INFO,
-    datefmt="%Y-%m-%d %H:%M:%S",
-)
 
 # Create a client instance
 app = Client(
@@ -47,22 +41,22 @@ def youtube_handler(_, message):
         duration = get_video_duration(link)
         api_call_cost = calculate_api_cost(duration)
 
-        logging.info(f"Processing video: '{title}'")
+        logger.info(f"Processing video: '{title}'")
         if duration >= 20:
-            logging.warning("Not proceeding with video - too long")
+            logger.warning("Not proceeding with video - too long")
             return
-        logging.info(
+        logger.info(
             f"🕖 The duration of the video is {duration} minutes. This will cost approximately ${api_call_cost}"
         )
 
         answer = generate_summary(os.environ["OPENAI_API_KEY"], link)
         if "tldr-abort" in answer.lower():
-            logging.warning("Detected a song - ignoring")
+            logger.warning("Detected a song - ignoring")
             mark_as_song(link)
         else:
             message.reply(answer)
     else:
-        logging.warning("Invalid YouTube video URL.")
+        logger.warning("Invalid YouTube video URL.")
 
 
 # Start the client
