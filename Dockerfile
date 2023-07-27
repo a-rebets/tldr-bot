@@ -21,12 +21,14 @@ ARG TG_API_ID
 ARG TG_API_HASH
 ARG OPENAI_API_KEY
 ARG BOT_TOKEN
+ARG PROMPT_SUMMARY_LEN
 
 # Set the environment variables for the service.py file
 ENV TG_API_ID=$TG_API_ID
 ENV TG_API_HASH=$TG_API_HASH
 ENV OPENAI_API_KEY=$OPENAI_API_KEY
 ENV BOT_TOKEN=$BOT_TOKEN
+ENV PROMPT_SUMMARY_LEN=$PROMPT_SUMMARY_LEN
 
 # Set the command to run the service.py file
 CMD ["python3", "service.py"]

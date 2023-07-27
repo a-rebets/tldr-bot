@@ -24,13 +24,15 @@ prompt_template = """First, try to assess if the following text has a very high 
 song lyrics (presence of verses / chorus / etc)
 - if it does, write "tldr-abort" and stop responding
 - if it does not, write concisely the main takeaway from the text, in a casual style 
-(like if you were explaining it to friend), under 200 characters
+(like if you were explaining it to a friend), in under {length} characters
 
 
-{text}
+{{text}}
 
 
-YOUR ANSWER:"""
+YOUR ANSWER:""".format(
+    length=os.environ["PROMPT_SUMMARY_LEN"]
+)
 PROMPT = PromptTemplate(template=prompt_template, input_variables=["text"])
 
 
