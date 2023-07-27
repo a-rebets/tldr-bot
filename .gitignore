@@ -1,0 +1,7 @@
+*.session
+tmp/
+env/
+.vscode/
+__pycache__/
+.known_songs
+.DS_Store
