@@ -55,6 +55,7 @@ def youtube_handler(_, message):
             mark_as_song(link)
         else:
             message.reply(f"📝 {answer}")
+            logger.info(f"Successfully replied to the message with chat id: {message.chat.id}")
     else:
         logger.warning("Invalid YouTube video URL.")
 
