@@ -137,6 +137,7 @@ def transcribe_audio(file_path, video_id):
 
 # Generating Video Summary
 def generate_summary(api_key: str, url: str) -> str:
+    summary = ""
     openai.api_key = api_key
 
     llm = ChatOpenAI(model_name="gpt-3.5-turbo-16k")
@@ -154,22 +155,24 @@ def generate_summary(api_key: str, url: str) -> str:
     transcript_filepath = f"tmp/{video_id}.txt"
 
     # Check if the transcript file already exist
-    if not os.path.exists(transcript_filepath):
-        download_audio(url)
-        # Transcribe the mp3 audio to text
-        transcribe_audio(audio_path, video_id)
+    download_audio(url)
+    # Transcribe the mp3 audio to text
+    transcribe_audio(audio_path, video_id)
 
     # Generating summary of the text file
     with open(transcript_filepath) as f:
         transcript_file = f.read()
+        logger.info(transcript_file[0:300])
 
-    logger.info(transcript_file[0:300])
+        texts = text_splitter.split_text(transcript_file)
+        docs = [Document(page_content=t) for t in texts[:3]]
+        chain = load_summarize_chain(
+            llm, chain_type="map_reduce", map_prompt=PROMPT, combine_prompt=PROMPT
+        )
+        summary = chain.run(docs)
 
-    texts = text_splitter.split_text(transcript_file)
-    docs = [Document(page_content=t) for t in texts[:3]]
-    chain = load_summarize_chain(
-        llm, chain_type="map_reduce", map_prompt=PROMPT, combine_prompt=PROMPT
-    )
-    summary = chain.run(docs)
+        # Delete the temporary transcript and audio file after the summary is generated
+        os.remove(audio_path)
+        os.remove(transcript_filepath)
 
     return summary.strip()
